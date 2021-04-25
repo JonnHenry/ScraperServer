@@ -75,6 +75,7 @@ def get_data_wiki(city:str)-> str:
     text_cleaned = sub(r'\s+', ' ',data_without_clean)
     wiki_info =sub(r'\[.*?\]', '', text_cleaned)
     wiki_info = sub("\n", ' ', text_cleaned)
+    wiki_info = "Estes es un mensaje de prueba"
 
 
 def get_info(city:str):
