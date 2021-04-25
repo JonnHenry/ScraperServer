@@ -5,6 +5,7 @@ from typing import List
 from urllib.parse import unquote
 import fake_useragent
 from threading import Thread
+from time import sleep
 
 location = './fake_useragent%s.json' % fake_useragent.VERSION
 ua = fake_useragent.UserAgent(path=location)
@@ -59,6 +60,7 @@ def get_data_wiki(city:str)-> str:
     #submit/"click" search
     browser.submit_selected(btnName="btnG")
     url:str = ""
+    sleep(0.5)
     for link in browser.links():
         target = link.attrs['href']
         # Filter-out unrelated links and extract actual URL from Google's
@@ -84,6 +86,7 @@ def get_info(city:str):
 
     thread_images.join()
     thread_wiki.join()
+    
 
     return {"wiki": wiki_info,"imgs": images_urls}
 
