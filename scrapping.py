@@ -60,7 +60,7 @@ def get_data_wiki(city:str)-> str:
     #submit/"click" search
     browser.submit_selected(btnName="btnG")
     url:str = ""
-    sleep(0.5)
+    sleep(0.6)
     for link in browser.links():
         target = link.attrs['href']
         # Filter-out unrelated links and extract actual URL from Google's
@@ -73,16 +73,18 @@ def get_data_wiki(city:str)-> str:
     browser.open(url)
     data_without_clean = browser.get_current_page().find('p').text
     text_cleaned = sub(r'\s+', ' ',data_without_clean)
-    text_cleaned =sub(r'\[.*?\]', '', text_cleaned)
+    wiki_info =sub(r'\[.*?\]', '', text_cleaned)
     wiki_info = sub("\n", ' ', text_cleaned)
 
 
 def get_info(city:str):
     global images_urls,wiki_info
-    thread_images = Thread(target=get_images,args=(city,),name="thread_images")
-    thread_images.start()
+
     thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
     thread_wiki.start()
+    thread_images = Thread(target=get_images,args=(city,),name="thread_images")
+    thread_images.start()
+    
 
     thread_images.join()
     thread_wiki.join()
