@@ -1,19 +1,20 @@
-from decouple import config
+"""Flask configuration."""
+from os import environ
+from dotenv import load_dotenv
+
+load_dotenv('.env')
 
 class Config:
-    pass
+    """Base config."""
+    SECRET_KEY = environ.get('SECRET_KEY')
 
-class DevelopmentConfig(Config):
-    DEBUG = True
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/users'
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-class ProductionConfig(Config):
+class ProdConfig(Config):
+    FLASK_ENV = 'production'
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = config('DATABASE_URL', default='localhost')
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-config = {
-    'development': DevelopmentConfig,
-    'production': ProductionConfig
-}
+    TESTING = False
+    
+class DevConfig(Config):
+    FLASK_ENV = 'development'
+    DEBUG = True
+    TESTING = True
+    

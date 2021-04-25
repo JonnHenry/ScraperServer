@@ -4,12 +4,16 @@ from re import sub
 from typing import List
 from urllib.parse import unquote
 import fake_useragent
-
+from threading import Thread
 
 location = './fake_useragent%s.json' % fake_useragent.VERSION
 ua = fake_useragent.UserAgent(path=location)
 
+images_urls = []
+wiki_info = ""
+
 def get_images(city:str)-> List[str]:
+    global images_urls
     browser = StatefulBrowser(
         soup_config={'features': 'lxml'},  # Use the lxml HTML parser
         raise_on_404=True,
@@ -37,10 +41,11 @@ def get_images(city:str)-> List[str]:
             image_source.append(image)
             cont+=1
 
-    return image_source
+    images_urls = image_source
 
 
 def get_data_wiki(city:str)-> str:
+    global wiki_info
     browser =StatefulBrowser(
         soup_config={'features': 'lxml'},  # Use the lxml HTML parser
         raise_on_404=True,
@@ -67,9 +72,32 @@ def get_data_wiki(city:str)-> str:
     data_without_clean = browser.get_current_page().find('p').text
     text_cleaned = sub(r'\s+', ' ',data_without_clean)
     text_cleaned =sub(r'\[.*?\]', '', text_cleaned)
-    return sub("\n", ' ', text_cleaned)
+    wiki_info = sub("\n", ' ', text_cleaned)
+
+
+def get_info(city:str):
+    global images_urls,wiki_info
+    thread_images = Thread(target=get_images,args=(city,),name="thread_images")
+    thread_images.start()
+    thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
+    thread_wiki.start()
+
+    thread_images.join()
+    thread_wiki.join()
+
+    return {"wiki": wiki_info,"imgs": images_urls}
+
+    
+
+
+
+
+
+
+
+
 
 #Testing
-#print(get_images("Cuenca"))
+#get_info("Cuenca")
 #print(get_data_wiki("Cuenca"))
 

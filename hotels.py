@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import requests
-from json import dumps,loads
+from json import loads
 from typing import List
 
 def get_hotels(lat:str,lng:str,checkIn:str,checkOut:str,rooms:str,sortOrder:str="NO_SORT")-> List[dict[str]]:
@@ -31,6 +31,16 @@ def get_hotels(lat:str,lng:str,checkIn:str,checkOut:str,rooms:str,sortOrder:str=
         hotel["address"] = row["address"]["streetAddress"] if "address" in row else None
         hotels.append(hotel)
 
-    return dumps(hotels)
+    return hotels
 
+#Testing
 #print(get_hotels(lat="-2.90055",lng="-79.00453",checkIn="2021-01-27",checkOut="2021-01-28",rooms="1",sortOrder="BEST_SELLER"))
+
+#{
+#    "lat":"-2.90055",
+#    "lng":"-79.00453",
+#    "checkIn":"2021-01-27",
+#    "checkOut":"2021-01-28",
+#    "rooms":"1",
+#    "sortOrder":"BEST_SELLER"
+#}
