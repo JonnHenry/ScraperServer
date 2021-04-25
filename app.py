@@ -20,11 +20,13 @@ load_dotenv(dotenv_path)
 
 port = environ.get("PORT") #Variable used to development
 app = Flask(__name__)
-CORS(app)
 app.config.from_object('config.ProdConfig')
+CORS(app)
 
 #Get data from database
-database = Map(uri_db = environ.get("BD_URL"))
+
+#database = Map(uri_db = environ.get("BD_URL"))
+database = Map(uri_db = environ.get("mongodb+srv://ManageData:admin@cluster0.aifq0.mongodb.net/test"))
 
 @app.route('/', methods=['GET'])
 def ping():
