@@ -42,7 +42,7 @@ def get_images(city:str)-> List[str]:
             image_source.append(image)
             cont+=1
 
-    images_urls = image_source
+    return image_source
 
 
 def get_data_wiki(city:str)-> str:
@@ -73,7 +73,7 @@ def get_data_wiki(city:str)-> str:
     browser.open(url)
     data_without_clean = browser.get_current_page().find('p').text
     text_cleaned = sub(r'\s+', ' ',data_without_clean)
-    wiki_info = sub(r'\[.*?\]', '', text_cleaned)
+    return sub(r'\[.*?\]', '', text_cleaned)
 
 
 def get_info(city:str):
