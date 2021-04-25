@@ -60,7 +60,7 @@ def get_data_wiki(city:str)-> str:
     #submit/"click" search
     browser.submit_selected(btnName="btnG")
     url:str = ""
-    sleep(0.6)
+    
     for link in browser.links():
         target = link.attrs['href']
         # Filter-out unrelated links and extract actual URL from Google's
