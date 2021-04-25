@@ -5,7 +5,6 @@ from typing import List
 from urllib.parse import unquote
 import fake_useragent
 from threading import Thread
-from time import sleep
 
 location = './fake_useragent%s.json' % fake_useragent.VERSION
 ua = fake_useragent.UserAgent(path=location)
@@ -42,7 +41,7 @@ def get_images(city:str)-> List[str]:
             image_source.append(image)
             cont+=1
 
-    return image_source
+    images_urls = image_source
 
 
 def get_data_wiki(city:str)-> str:
@@ -60,7 +59,6 @@ def get_data_wiki(city:str)-> str:
     #submit/"click" search
     browser.submit_selected(btnName="btnG")
     url:str = ""
-    
     for link in browser.links():
         target = link.attrs['href']
         # Filter-out unrelated links and extract actual URL from Google's
@@ -73,36 +71,18 @@ def get_data_wiki(city:str)-> str:
     browser.open(url)
     data_without_clean = browser.get_current_page().find('p').text
     text_cleaned = sub(r'\s+', ' ',data_without_clean)
-    return sub(r'\[.*?\]', '', text_cleaned)
+    text_cleaned =sub(r'\[.*?\]', '', text_cleaned)
+    wiki_info = sub("\n", '', text_cleaned)
 
 
 def get_info(city:str):
     global images_urls,wiki_info
+    thread_images = Thread(target=get_images,args=(city,),name="thread_images")
+    thread_images.start()
+    thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
+    thread_wiki.start()
 
-    get_data_wiki(city)
-    get_images(city)
-
-    #thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
-    #thread_wiki.start()
-    #thread_images = Thread(target=get_images,args=(city,),name="thread_images")
-    #thread_images.start()
-    #thread_images.join()
-    #thread_wiki.join()
-    
+    thread_images.join()
+    thread_wiki.join()
 
     return {"wiki": wiki_info,"imgs": images_urls}
-
-    
-
-
-
-
-
-
-
-
-
-#Testing
-#get_info("Cuenca")
-#print(get_data_wiki("Cuenca"))
-

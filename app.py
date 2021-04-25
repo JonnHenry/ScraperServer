@@ -6,7 +6,7 @@ from flask_cors import CORS
 #Own
 from dbCities import Map
 from hotels import get_hotels
-from scrapping import get_images,get_data_wiki
+from scrapping import get_info
 import config
 
 #enviroment
@@ -70,10 +70,7 @@ def get_information():
     try:
         response = jsonify({
             "error": False,
-            "data": {
-                "wiki": get_data_wiki(city),
-                "imgs": get_images(city)
-            }
+            "data": get_info(city)
         })
         
     except:
