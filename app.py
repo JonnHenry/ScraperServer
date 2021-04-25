@@ -16,10 +16,10 @@ from dotenv import load_dotenv
 #load the url of the database
 load_dotenv('.env')
 
-port = environ.get("PORT")
+port = environ.get("PORT") #Variable used to development
 app = Flask(__name__)
 CORS(app)
-app.config.from_object('config.DevConfig')
+app.config.from_object('config.ProdConfig')
 
 #Get data from database
 database = Map(uri_db = environ.get("BD_URL"))
@@ -43,7 +43,7 @@ def get_provinces():
         })
     return response
 
-@app.route('/cities',methods=['POST'])
+@app.route('/cities',methods=['GET'])
 def get_cities():
     province = request.json['province']
     try:
@@ -102,8 +102,5 @@ def get_hotels_info():
 
 
 
-
-
-
 if __name__ == '__main__':
-    app.run(port=port)
+    app.run()
