@@ -73,21 +73,21 @@ def get_data_wiki(city:str)-> str:
     browser.open(url)
     data_without_clean = browser.get_current_page().find('p').text
     text_cleaned = sub(r'\s+', ' ',data_without_clean)
-    wiki_info =sub(r'\[.*?\]', '', text_cleaned)
-    wiki_info = sub("\n", ' ', wiki_info)
+    wiki_info = sub(r'\[.*?\]', '', text_cleaned)
 
 
 def get_info(city:str):
     global images_urls,wiki_info
 
-    thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
-    thread_wiki.start()
-    thread_images = Thread(target=get_images,args=(city,),name="thread_images")
-    thread_images.start()
-    
+    get_data_wiki(city)
+    get_images(city)
 
-    thread_images.join()
-    thread_wiki.join()
+    #thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
+    #thread_wiki.start()
+    #thread_images = Thread(target=get_images,args=(city,),name="thread_images")
+    #thread_images.start()
+    #thread_images.join()
+    #thread_wiki.join()
     
 
     return {"wiki": wiki_info,"imgs": images_urls}
