@@ -25,8 +25,8 @@ CORS(app)
 
 #Get data from database
 
-#database = Map(uri_db = environ.get("BD_URL"))
-database = Map(uri_db = environ.get("mongodb+srv://ManageData:admin@cluster0.aifq0.mongodb.net/test"))
+database = Map(uri_db = environ.get("BD_URL"))
+#database = Map(uri_db = environ.get("mongodb+srv://ManageData:admin@cluster0.aifq0.mongodb.net/test"))
 
 @app.route('/', methods=['GET'])
 def ping():
