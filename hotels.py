@@ -3,6 +3,7 @@ import requests
 from json import loads
 from typing import List
 
+
 def get_hotels(lat:str,lng:str,checkIn:str,checkOut:str,rooms:str,sortOrder:str="NO_SORT")-> List[dict[str]]:
     url = "https://hotels-com-free.p.rapidapi.com/srle/listing/v1/brands/hotels.com"
     querystring = {
