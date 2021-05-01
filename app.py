@@ -66,8 +66,7 @@ def get_cities():
 
 @app.route('/info_city',methods=['GET'])
 def get_information():
-    province = request.args.get('province')
-    city = request.json['city']
+    city = request.args.get('city',type = str)
     try:
         response = jsonify({
             "error": False,
