@@ -26,7 +26,6 @@ CORS(app)
 #Get data from database
 
 database = Map(uri_db = environ.get("BD_URL"))
-#database = Map(uri_db = environ.get("mongodb+srv://ManageData:admin@cluster0.aifq0.mongodb.net/test"))
 
 @app.route('/', methods=['GET'])
 def ping():
@@ -81,15 +80,15 @@ def get_information():
     return response
 
 
-@app.route('/hotels',methods=['POST'])
+@app.route('/hotels',methods=['GET'])
 def get_hotels_info():
 
-    lat = request.json['lat']
-    lng = request.json['lng']
-    checkIn = request.json['checkIn']
-    checkOut = request.json['checkOut']
-    rooms = request.json['rooms']
-    sortOrder = request.json['sortOrder'] if 'sortOrder' in request.json else None
+    lat =  request.args.get('lat',type = str)
+    lng = request.args.get('lng',type = str)
+    checkIn = request.args.get('checkIn',type = str)
+    checkOut = request.args.get('checkOut',type = str)
+    rooms = request.args.get('rooms',type = str)
+    sortOrder = request.args.get('sortOrder',type = str) if 'sortOrder' in request.args else None
 
     try:
         response = jsonify({
