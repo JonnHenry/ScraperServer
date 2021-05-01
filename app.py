@@ -49,11 +49,7 @@ def get_provinces():
 
 @app.route('/cities',methods=['GET'])
 def get_cities():
-<<<<<<< HEAD
     province = request.args.get('province',type = str)
-=======
-    province = request.args.get('province')
->>>>>>> c689ace11aea6d338029d9fddda986edde152a0f
     try:
         response = jsonify({
             "error": False,
