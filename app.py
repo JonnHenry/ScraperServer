@@ -20,7 +20,7 @@ load_dotenv(dotenv_path)
 
 port = environ.get("PORT") #Variable used to development
 app = Flask(__name__)
-app.config.from_object('config.DevConfig')
+app.config.from_object('config.ProdConfig')
 CORS(app)
 
 #Get data from database
