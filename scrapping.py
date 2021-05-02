@@ -26,7 +26,7 @@ def get_images(city:str)-> List[str]:
     #target the search input
     browser.select_form() #The form used is 'q'
     #search for a term
-    browser["q"] = '{} Ecuador'.format(city) 
+    browser["q"] = '{} Ecuador hd'.format(city) 
     sleep(2)
     #submit/"click" search
     browser.submit_selected(btnName="btnG")
