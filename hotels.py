@@ -17,9 +17,10 @@ def get_hotels(lat:str,lng:str,checkIn:str,checkOut:str,rooms:str,sortOrder:str=
         "pageNumber":"1",
         "sortOrder": sortOrder
         }
-
+    #New code: 1947a8bc22msh4fba3831b95a335p18879ejsn5748d4c16c85
+    #Last code: 362591bdf2msh4ca334d27aa010bp11f3d0jsnd48789d729f4
     headers = {
-        'x-rapidapi-key': "362591bdf2msh4ca334d27aa010bp11f3d0jsnd48789d729f4",
+        'x-rapidapi-key': "1947a8bc22msh4fba3831b95a335p18879ejsn5748d4c16c85",
         'x-rapidapi-host': "hotels-com-free.p.rapidapi.com"
         }
     hotels:List = []
