@@ -26,7 +26,7 @@ def get_images(city:str)-> List[str]:
     #target the search input
     browser.select_form() #The form used is 'q'
     #search for a term
-    browser["q"] = '{} Ecuador high definition'.format(city) 
+    browser["q"] = '{} Ecuador'.format(city) 
     sleep(2)
     #submit/"click" search
     browser.submit_selected(btnName="btnG")
@@ -35,8 +35,8 @@ def get_images(city:str)-> List[str]:
     all_images = page.find_all('img')
 
     image_source: List = []
-    cont:int = 1
-    for image in all_images:
+    cont:int = 0
+    for image in all_images[:5]:
         if cont > 4:
             break
         image = image.get('src')
@@ -49,7 +49,7 @@ def get_images(city:str)-> List[str]:
 
 def get_data_wiki(city:str)-> str:
     global wiki_info
-    query = "{} Ecuador ".format(city)
+    query = "{} Ecuador ciudad".format(city)
     data_without_clean = summary(query,sentences=2)
     text_cleaned = sub(r'\s+', ' ',data_without_clean)
     text_cleaned =sub(r'\[.*?\]', '', text_cleaned)
