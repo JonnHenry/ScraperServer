@@ -19,6 +19,7 @@ dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
 port = environ.get("PORT") #Variable used to development
+image_subscription_key = environ.get("IMG_KEY")
 app = Flask(__name__)
 app.config.from_object('config.ProdConfig')
 CORS(app)
@@ -69,7 +70,7 @@ def get_information():
     try:
         response = jsonify({
             "error": False,
-            "data": get_info(city)
+            "data": get_info(city,image_subscription_key)
         })
         
     except:

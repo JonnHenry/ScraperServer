@@ -1,50 +1,26 @@
 # -*- coding: utf-8 -*-
-from mechanicalsoup import StatefulBrowser
 from re import sub
 from typing import List
 from urllib.parse import unquote
-import fake_useragent
 from threading import Thread
 from wikipedia import summary,set_lang
-from time import sleep
-
-location = './fake_useragent%s.json' % fake_useragent.VERSION
-ua = fake_useragent.UserAgent(path=location)
+from requests import get
 
 images_urls = []
 wiki_info = ""
 set_lang("es")
 
-def get_images(city:str)-> List[str]:
+def get_images(city:str,image_subscription_key:str)-> List[str]:
     global images_urls
-    browser = StatefulBrowser(
-        soup_config={'features': 'lxml'},  # Use the lxml HTML parser
-        raise_on_404=True,
-        user_agent=ua.random
-    )
-    browser.open("https://images.google.com/") #Open link to the google Images
-    #target the search input
-    browser.select_form() #The form used is 'q'
-    #search for a term
-    browser["q"] = '{} Ecuador'.format(city) 
-    sleep(2)
-    #submit/"click" search
-    browser.submit_selected(btnName="btnG")
-    
-    page = browser.get_current_page()
-    all_images = page.find_all('img')
+    search_url = "https://api.bing.microsoft.com/v7.0/images/search"
+    search_term = "{} ecuador".format(city)
 
-    image_source: List = []
-    cont:int = 0
-    for image in all_images[:5]:
-        if cont > 4:
-            break
-        image = image.get('src')
-        if image.startswith('https'):    
-            image_source.append(image)
-            cont+=1
-
-    images_urls = image_source
+    headers = {"Ocp-Apim-Subscription-Key" : image_subscription_key}
+    params  = {"q": search_term, "license": "public", "imageType": "photo"}
+    response = get(search_url, headers=headers, params=params)
+    response.raise_for_status()
+    search_results = response.json()
+    images_urls = [img["thumbnailUrl"] for img in search_results["value"][:4]]
 
 
 def get_data_wiki(city:str)-> str:
@@ -56,17 +32,21 @@ def get_data_wiki(city:str)-> str:
     wiki_info = sub("\n", ' ', text_cleaned)
 
 
-def get_info(city:str):
-    global images_urls,wiki_info
-    thread_images = Thread(target=get_images,args=(city,),name="thread_images")
-    thread_images.start()
-    thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
-    thread_wiki.start()
+def get_info(city:str,image_subscription_key:str):
+    try:
+        global images_urls,wiki_info
+        thread_images = Thread(target=get_images,args=(city,image_subscription_key,),name="thread_images")
+        thread_images.start()
+        thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
+        thread_wiki.start()
 
-    thread_images.join()
-    thread_wiki.join()
-
+        thread_images.join()
+        thread_wiki.join()
+    except:
+        return {"wiki": wiki_info,"imgs": images_urls}
+    
     return {"wiki": wiki_info,"imgs": images_urls}
 
 #Testing
-#print(get_info("Cuenca"))
+#get_images("Cuenca","a50938067fe9431ea31c8377e4ea6790")
+#print(images_urls)
