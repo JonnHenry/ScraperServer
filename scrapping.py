@@ -5,23 +5,30 @@ from urllib.parse import unquote
 from threading import Thread
 from wikipedia import summary,set_lang
 from requests import get
+from google_images_search import GoogleImagesSearch
 
 images_urls = []
 wiki_info = ""
 set_lang("es")
 
-def get_images(city:str,image_subscription_key:str)-> List[str]:
+def get_images(city:str,api_key:str,cx_key:str)-> List[str]:
     global images_urls
-    search_url = "https://api.bing.microsoft.com/v7.0/images/search"
-    search_term = "{} ecuador".format(city)
+    gis = GoogleImagesSearch(api_key,cx_key)
 
-    headers = {"Ocp-Apim-Subscription-Key" : image_subscription_key}
-    params  = {"q": search_term, "license": "public", "imageType": "photo"}
-    response = get(search_url, headers=headers, params=params)
-    response.raise_for_status()
-    search_results = response.json()
-    images_urls = [img["thumbnailUrl"] for img in search_results["value"][:4]]
-
+    # define search params:
+    _search_params = {
+        'q': 'Cuenca Ecuador',
+        'num': 4,
+        'safe': 'off',
+        'fileType': 'jpg|png',
+        'imgType': 'photo',
+        'imgSize': 'MEDIUM',
+        'imgDominantColor': 'white',
+        'rights': 'cc_publicdomain|cc_attribute|cc_sharealike|cc_noncommercial|cc_nonderived'
+    }
+    gis.search(search_params=_search_params)
+    images_urls = [image.url for image in gis.results()]
+    
 
 def get_data_wiki(city:str)-> str:
     global wiki_info
@@ -32,10 +39,10 @@ def get_data_wiki(city:str)-> str:
     wiki_info = sub("\n", ' ', text_cleaned)
 
 
-def get_info(city:str,image_subscription_key:str):
+def get_info(city:str,image_subscription_key:str,cx_key:str):
     try:
         global images_urls,wiki_info
-        thread_images = Thread(target=get_images,args=(city,image_subscription_key,),name="thread_images")
+        thread_images = Thread(target=get_images,args=(city,image_subscription_key,cx_key,),name="thread_images")
         thread_images.start()
         thread_wiki = Thread(target=get_data_wiki,args=(city,),name="thread_wiki")
         thread_wiki.start()
@@ -48,5 +55,5 @@ def get_info(city:str,image_subscription_key:str):
     return {"wiki": wiki_info,"imgs": images_urls}
 
 #Testing
-#get_images("Cuenca","a50938067fe9431ea31c8377e4ea6790")
+#get_info("Cuenca","AIzaSyADjI1y3TPjyX3ex-ERV-0EBoHLmquvERo","5e4bcca5fce1a42dc")
 #print(images_urls)
